@@ -13,6 +13,12 @@ public class PolyFactoryTest {
     }
 
     @Test
+    public void testPolyString1() {
+        Poly p = PolyFactory.parse("X^10 - 100 * X ^ 2 + 5 * X ^ 2 + 20 * X ^ 2 + 100 * X + 10 * X + 1 + X ^ 10 + X ^ 10");
+        assertEquals("1 * X ^ 0 + 110 * X ^ 1 + -75 * X ^ 2 + 3 * X ^ 10", p.toString());
+    }
+
+    @Test
     public void testPolyFunction1() {
         DoubleUnaryOperator polyFunction = PolyFactory.parseToFunction("X^2 + X^2 + 3 * X + 7");
         assertEquals(21, polyFunction.applyAsDouble(2), 0.00001);
