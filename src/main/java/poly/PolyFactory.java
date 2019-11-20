@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleUnaryOperator;
+import java.util.function.Function;
 
 public class PolyFactory {
 
@@ -56,8 +57,7 @@ public class PolyFactory {
      * @return a function representing the polynomial described by expr
      */
     public static DoubleUnaryOperator parseToFunction(String expr) {
-        /* TODO: implement this method */
-        return null;
+        return parse(expr).getFunction();
     }
 
     private static class PolyListener_PolyCreator extends PolyBaseListener {
@@ -115,6 +115,38 @@ public class PolyFactory {
 
         public Poly getPoly() {
             return canonical(terms);
+        }
+
+        private Poly canonical(List<Term> terms) {
+            List<Term> termList = new ArrayList<>();
+            Term v = null;
+            boolean sentinel = false;
+            int maxPower = 0;
+
+            for (Term t: terms) {
+                if (t.getPow() > maxPower) {
+                    maxPower = t.getPow();
+                }
+            }
+
+            for (int i = 0; i <= maxPower; i++) {
+                sentinel = false;
+                for (Term t : terms) {
+                    if (t.getPow() == i) {
+                        if (sentinel) {
+                            v = new Term(t.getCoeff() + v.getCoeff(), t.getPow());
+                        } else {
+                            sentinel = true;
+                            v = new Term(t.getCoeff(), t.getPow());
+                        }
+                    }
+                }
+                if (sentinel) {
+                    termList.add(v);
+                }
+            }
+
+            return new Poly(termList);
         }
     }
 
